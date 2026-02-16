@@ -17,4 +17,3 @@ pub enum Commands {
     /// Prints "Hello, World!".
     Hello,
 }
-
