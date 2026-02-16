@@ -25,6 +25,10 @@ pub struct Cli {
     #[arg(long, default_value_t)]
     pub n_args: NumberRange<usize>,
 
+    /// The range of numbers of bytes to pass in to the program via stdin.
+    #[arg(long, default_value_t)]
+    pub n_input_bytes: NumberRange<usize>,
+
     /// Non-zero exit codes to ignore.
     #[arg(long)]
     pub ignore: Vec<NonZeroU8>,
