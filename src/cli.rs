@@ -5,10 +5,11 @@
 
 use core::{
     fmt::{self, Display, Formatter},
+    num::NonZeroU8,
     ops::{Deref, DerefMut, RangeInclusive},
     str::FromStr,
 };
-use std::{ffi::OsString, num::NonZeroU8, path::PathBuf};
+use std::{ffi::OsString, path::PathBuf};
 
 use clap::Parser;
 
@@ -49,7 +50,7 @@ impl<T> DerefMut for NumberRange<T> {
 }
 
 impl<T> Default for NumberRange<T>
-where 
+where
     T: Default,
 {
     fn default() -> Self {
@@ -73,7 +74,7 @@ where
 }
 
 impl<T> From<T> for NumberRange<T>
-where 
+where
     T: Clone,
 {
     fn from(value: T) -> Self {
