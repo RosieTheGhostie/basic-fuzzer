@@ -18,11 +18,9 @@ mod cli;
 
 use clap::Parser;
 
-use cli::{Cli, Commands};
+use cli::Cli;
 
 fn main() {
-    let cli = Cli::parse();
-    match cli.command {
-        Commands::Hello => println!("Hello, World!"),
-    }
+    let _cli = Cli::parse();
+    println!("Hello, World!");
 }
