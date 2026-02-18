@@ -14,7 +14,7 @@ use rand::{
     prelude::*,
 };
 
-use crate::cli::NumberRange;
+use crate::number_range::NumberRange;
 
 pub fn extra_args<R>(
     mut rng: R,

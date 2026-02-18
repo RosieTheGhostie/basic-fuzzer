@@ -1,4 +1,4 @@
-//! A [`RangeInclusive`]-like `struct` for command-line parsing.
+//! A [`RangeInclusive`]-like `struct` designed specifically for command-line parsing.
 //! Copyright (C) 2026  RosieTheGhostie
 //!
 //! See [the crate-level documentation](crate) for the full copyright notice.
