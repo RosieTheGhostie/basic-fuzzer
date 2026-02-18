@@ -1,3 +1,8 @@
+//! Implementation of the ['fuzz' command](crate::cli::Commands::Fuzz).
+//! Copyright (C) 2026  RosieTheGhostie
+//!
+//! See [the crate-level documentation](crate) for the full copyright notice.
+
 use std::{
     ffi::OsStr,
     fs::File,
