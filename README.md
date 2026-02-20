@@ -14,9 +14,34 @@ the program improperly handles an edge-case, usually resulting in a crash.
 
 A more complete and accurate description can be found [here](https://en.wikipedia.org/wiki/Fuzzing).
 
+## Installation
+
+For the sake of simplicity, it is recommended to just download the release binary from the releases
+page on GitHub.
+
 ## Usage
 
-TODO: CLI documentation
+For detailed usage, run the following command in the same directory as 'basic-fuzzer':
+
+```bash
+./basic-fuzzer --help
+```
+
+This will tell you how to run the fuzzer on any given program. Then, once you have ran the fuzzer
+and produced a crashing state, there will be two new files: 'input-xxxxxxxxxxxx' and
+'args-xxxxxxxxxxxx' ('x' is a placeholder for an arbitrary hex digit). The input is the `stdin`
+input encoded in UTF-8. The program arguments, however, are encoded in a more complex manner. The
+file represents an array of UTF-8 length-encoded strings, where the first eight bytes of a string
+represent its length (in little endian). For example, this:
+
+```text
+05 00 00 00 00 00 00 00
+68 65 6c 6c 6f
+05 00 00 00 00 00 00 00
+77 6f 72 6c 64
+```
+
+represents `["hello", "world"]`.
 
 ## Limitiations
 

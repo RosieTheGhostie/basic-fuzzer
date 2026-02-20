@@ -27,7 +27,7 @@ pub struct Cli {
     #[arg(long, default_value_t)]
     pub n_args: NumberRange<usize>,
 
-    /// The maximum length of any extra command-line arguments in bytes.
+    /// The maximum length of any extra command-line arguments in UTF-8 codepoints.
     #[arg(long, default_value_t = NonZeroUsize::new(256).unwrap())]
     pub max_arg_len: NonZeroUsize,
 
