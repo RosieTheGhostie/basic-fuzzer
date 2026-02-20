@@ -16,18 +16,66 @@
 
 mod cli;
 mod command;
-mod command_impls;
 mod generate;
 mod number_range;
 
-use clap::Parser;
+use std::{
+    ffi::OsStr,
+    fs::File,
+    io::{self, prelude::*},
+    process::CommandArgs,
+};
 
-use cli::{Cli, Commands};
+use clap::Parser;
+use rand::RngExt;
+
+use cli::Cli;
+use command::Command;
 
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
-    match cli.command {
-        Commands::Fuzz(args) => command_impls::fuzz(args),
-        Commands::Recreate(args) => command_impls::recreate(args),
+    let ok_exit_codes = cli.ok_exit_codes();
+
+    let command = Command::new(&cli.program).with_args(cli.args);
+    let mut rng = rand::rng();
+
+    for _try in 0..cli.n_tries.get() {
+        let input = generate::stdin(&mut rng, cli.n_input_bytes)?;
+
+        let mut command = command
+            .clone()
+            .with_args(generate::extra_args(&mut rng, cli.n_args, cli.max_arg_len)?)
+            .build();
+        let mut child = command.spawn()?;
+        child.stdin.take().unwrap().write_all(&input)?;
+
+        match child.wait()?.code() {
+            Some(code) if ok_exit_codes.contains(&code) => continue,
+            Some(code) => eprintln!("Program terminated with exit code {code}"),
+            None => eprintln!("Program terminated via signal"),
+        }
+
+        return record_input_and_args(rng, &input, command.get_args()).map_err(anyhow::Error::from);
     }
+
+    eprintln!("Could not produce a failing state");
+    Ok(())
+}
+
+fn record_input_and_args<R>(rng: R, input: &[u8], args: CommandArgs<'_>) -> io::Result<()>
+where
+    R: RngExt,
+{
+    let random_suffix = generate::hex_string(rng, 12);
+
+    File::create_new(format!("input-{random_suffix}"))?.write_all(input)?;
+
+    let mut args_file = File::create_new(format!("args-{random_suffix}"))?;
+    for arg in args.into_iter().map(OsStr::as_encoded_bytes) {
+        let arg_len: u64 = arg.len() as _;
+        args_file.write_all(&arg_len.to_le_bytes())?;
+        args_file.write_all(arg)?;
+    }
+
+    Ok(())
 }

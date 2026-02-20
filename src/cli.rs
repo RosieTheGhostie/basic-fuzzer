@@ -6,28 +6,13 @@
 use core::num::{NonZeroI32, NonZeroUsize};
 use std::{collections::HashSet, ffi::OsString};
 
-use clap::{Args, Parser, Subcommand};
+use clap::Parser;
 
 use crate::number_range::NumberRange;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
-    #[command(subcommand)]
-    pub command: Commands,
-}
-
-#[derive(Clone, Debug, Subcommand)]
-pub enum Commands {
-    /// Fuzzes the given program.
-    Fuzz(FuzzArguments),
-
-    /// Recreates a failing state produced by the fuzzer.
-    Recreate(RecreateArguments),
-}
-
-#[derive(Args, Clone, Debug)]
-pub struct FuzzArguments {
     /// The program to fuzz.
     pub program: OsString,
 
@@ -55,7 +40,7 @@ pub struct FuzzArguments {
     pub ignore: Vec<NonZeroI32>,
 }
 
-impl FuzzArguments {
+impl Cli {
     pub fn ok_exit_codes(&self) -> HashSet<i32> {
         let mut set = HashSet::with_capacity(self.ignore.len() + 1);
 
@@ -67,6 +52,3 @@ impl FuzzArguments {
         set
     }
 }
-
-#[derive(Args, Clone, Debug)]
-pub struct RecreateArguments {}
